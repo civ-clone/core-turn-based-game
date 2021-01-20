@@ -1,3 +1,7 @@
 import { Engine } from '@civ-clone/core-engine/Engine';
-export declare const getEvents: (engine?: Engine) => [string, () => any][];
+import { RuleRegistry } from '@civ-clone/core-rule/RuleRegistry';
+export declare const getEvents: (
+  ruleRegistry?: RuleRegistry,
+  engine?: Engine
+) => [string, () => any][];
 export default getEvents;

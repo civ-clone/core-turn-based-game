@@ -1,13 +1,11 @@
-import { Yield, IYield } from '@civ-clone/core-yield/Yield';
-export interface ITurn extends IYield {
+export interface ITurn {
   increment(): number;
+  value(): number;
 }
-export declare class Turn extends Yield implements ITurn {
-  add(): void;
-  addModifier(): void;
+export declare class Turn implements ITurn {
+  #private;
   increment(): number;
-  set(): void;
-  subtract(): void;
+  value(): number;
 }
 export declare const instance: Turn;
 export default Turn;

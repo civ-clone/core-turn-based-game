@@ -1,4 +1,3 @@
-import { End, IEndRegistry } from '../../Rules/End';
 import {
   Engine,
   instance as engineInstance,
@@ -7,21 +6,20 @@ import {
   RuleRegistry,
   instance as ruleRegistryInstance,
 } from '@civ-clone/core-rule/RuleRegistry';
-import {
-  Start as EngineStart,
-  IStartRegistry as IEngineStartRegistry,
-} from '@civ-clone/core-engine/Rules/Start';
-import { Start, IStartRegistry } from '../../Rules/Start';
-import { instance as turn } from '../../Turn';
+import { Turn, instance as turnInstance } from '../../Turn';
+import End from '../../Rules/End';
+import EngineStart from '@civ-clone/core-engine/Rules/Start';
+import Start from '../../Rules/Start';
 
 export const getEvents = (
   ruleRegistry: RuleRegistry = ruleRegistryInstance,
-  engine: Engine = engineInstance
+  engine: Engine = engineInstance,
+  turn: Turn = turnInstance
 ): [string, () => any][] => [
   [
     'engine:start',
     (): void => {
-      (ruleRegistry as IEngineStartRegistry).process(EngineStart);
+      ruleRegistry.process(EngineStart);
     },
   ],
   ...['game:start', 'turn:end'].map((event: string): [string, () => any] => [
@@ -31,13 +29,13 @@ export const getEvents = (
   [
     'turn:end',
     (): void => {
-      (ruleRegistry as IEndRegistry).process(End, turn);
+      ruleRegistry.process(End, turn);
     },
   ],
   [
     'turn:start',
     (): void => {
-      (ruleRegistry as IStartRegistry).process(Start, turn);
+      ruleRegistry.process(Start, turn);
     },
   ],
 ];

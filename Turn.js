@@ -13,9 +13,12 @@ var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (
 var _Turn_value;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.instance = exports.Turn = void 0;
-class Turn {
+const DataObject_1 = require("@civ-clone/core-data-object/DataObject");
+class Turn extends DataObject_1.DataObject {
     constructor() {
+        super();
         _Turn_value.set(this, 0);
+        this.addKey('value');
     }
     increment() {
         var _a;

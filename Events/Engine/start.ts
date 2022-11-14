@@ -24,7 +24,9 @@ export const getEvents = (
   ],
   ...['game:start', 'turn:end'].map((event: string): [string, () => any] => [
     event,
-    (): boolean => engine.emit('turn:start', turn.increment()),
+    (): void => {
+      engine.emit('turn:start', turn.increment());
+    },
   ]),
   [
     'turn:end',

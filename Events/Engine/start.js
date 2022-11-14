@@ -16,7 +16,9 @@ const getEvents = (ruleRegistry = RuleRegistry_1.instance, engine = Engine_1.ins
     ],
     ...['game:start', 'turn:end'].map((event) => [
         event,
-        () => engine.emit('turn:start', turn.increment()),
+        () => {
+            engine.emit('turn:start', turn.increment());
+        },
     ]),
     [
         'turn:end',

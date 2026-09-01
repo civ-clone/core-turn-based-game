@@ -7,7 +7,7 @@ export interface ITurn extends IDataObject {
   value(): number;
 }
 export declare class Turn extends DataObject implements ITurn {
-  #private;
+  private _value;
   constructor();
   increment(): number;
   value(): number;

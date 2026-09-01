@@ -9,7 +9,7 @@ export interface ITurn extends IDataObject {
 }
 
 export class Turn extends DataObject implements ITurn {
-  #value: number = 0;
+  private _value: number = 0;
 
   constructor() {
     super();
@@ -18,13 +18,13 @@ export class Turn extends DataObject implements ITurn {
   }
 
   increment(): number {
-    this.#value++;
+    this._value++;
 
-    return this.#value;
+    return this._value;
   }
 
   value(): number {
-    return this.#value;
+    return this._value;
   }
 }
 

@@ -97,6 +97,36 @@ describe('the turn loop', (): void => {
     expect(started).to.deep.equal([1, 2]);
   });
 
+  it('does not carry waiting over into a new game', (): void => {
+    const { engine, gameResult, rules, turn, started } = setUp();
+
+    rules.register(
+      new End(
+        new Effect((turn: Turn) =>
+          endGame('date', null, gameResult, rules, turn)
+        )
+      )
+    );
+
+    engine.emit('game:start');
+    engine.emit('turn:end');
+
+    expect(started).to.deep.equal([1]);
+
+    // A new game in the same process: one that ends part-way through a turn and continues starts nothing.
+    gameResult.unregister(...gameResult.entries());
+    turn.set(0);
+    engine.emit('game:start');
+
+    expect(started).to.deep.equal([1, 1]);
+
+    endGame('retired', null, gameResult, rules, turn);
+    gameResult.get()!.completeScoring();
+    engine.emit('game:continue');
+
+    expect(started).to.deep.equal([1, 1]);
+  });
+
   it('waits again when a game loaded where it was waiting is told to', (): void => {
     const { engine, gameResult, rules, turn, started } = setUp();
 
@@ -108,6 +138,21 @@ describe('the turn loop', (): void => {
     engine.emit('game:continue');
 
     expect(started).to.deep.equal([41]);
+  });
+});
+
+describe('GameResultRegistry', (): void => {
+  it('holds one result, and takes the one it holds again', (): void => {
+    const registry = new GameResultRegistry(),
+      result = new GameResult('date', null, 1);
+
+    registry.register(result);
+    registry.register(result);
+
+    expect(registry.length).to.equal(1);
+    expect(() =>
+      registry.register(new GameResult('retired', null, 2))
+    ).to.throw(TypeError);
   });
 });
 

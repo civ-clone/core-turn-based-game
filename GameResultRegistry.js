@@ -22,7 +22,9 @@ class GameResultRegistry extends EntityRegistry_1.EntityRegistry {
         return gameResult !== null && !gameResult.scoringComplete();
     }
     register(...entities) {
-        if (this.length + entities.length > 1) {
+        // Registering the result it already holds again is fine, as it is for any registry.
+        const added = new Set(entities.filter((entity) => !this.includes(entity)));
+        if (this.length + added.size > 1) {
             throw new TypeError('A game has one GameResult.');
         }
         super.register(...entities);

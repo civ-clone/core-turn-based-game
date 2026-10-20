@@ -35,7 +35,15 @@ export const getEvents = (
         ruleRegistry.process(EngineStart);
       },
     ],
-    ['game:start', nextTurn],
+    [
+      'game:start',
+      (): void => {
+        // A new game isn't waiting on an earlier one's ending.
+        waiting = false;
+
+        nextTurn();
+      },
+    ],
     [
       'turn:end',
       (): void => {

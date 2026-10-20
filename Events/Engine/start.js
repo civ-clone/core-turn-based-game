@@ -21,7 +21,14 @@ const getEvents = (ruleRegistry = RuleRegistry_1.instance, engine = Engine_1.ins
                 ruleRegistry.process(Start_1.default);
             },
         ],
-        ['game:start', nextTurn],
+        [
+            'game:start',
+            () => {
+                // A new game isn't waiting on an earlier one's ending.
+                waiting = false;
+                nextTurn();
+            },
+        ],
         [
             'turn:end',
             () => {

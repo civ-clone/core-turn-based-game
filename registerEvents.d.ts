@@ -1,4 +1,5 @@
 import { Engine } from '@civ-clone/core-engine/Engine';
+import { GameResultRegistry } from './GameResultRegistry';
 import { RuleRegistry } from '@civ-clone/core-rule/RuleRegistry';
 import { Turn } from './Turn';
 /**
@@ -11,6 +12,7 @@ import { Turn } from './Turn';
  */
 export declare type TurnBasedGame = {
   engine: Engine;
+  gameResult: GameResultRegistry;
   rules: RuleRegistry;
   turn: Turn;
 };

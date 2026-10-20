@@ -3,6 +3,10 @@ import {
   instance as engineInstance,
 } from '@civ-clone/core-engine/Engine';
 import {
+  GameResultRegistry,
+  instance as gameResultRegistryInstance,
+} from './GameResultRegistry';
+import {
   RuleRegistry,
   instance as ruleRegistryInstance,
 } from '@civ-clone/core-rule/RuleRegistry';
@@ -19,12 +23,13 @@ import engineStart from './Events/Engine/start';
  */
 export type TurnBasedGame = {
   engine: Engine;
+  gameResult: GameResultRegistry;
   rules: RuleRegistry;
   turn: Turn;
 };
 
 export const registerEvents = (game: TurnBasedGame): void =>
-  [...engineStart(game.rules, game.engine, game.turn)].forEach(
+  [...engineStart(game.rules, game.engine, game.turn, game.gameResult)].forEach(
     ([event, handler]: [string, () => any]): void => {
       game.engine.on(event, handler);
     }
@@ -35,6 +40,7 @@ export const registerEvents = (game: TurnBasedGame): void =>
 // starts — and, as with the rules, nothing saying so.
 registerEvents({
   engine: engineInstance,
+  gameResult: gameResultRegistryInstance,
   rules: ruleRegistryInstance,
   turn: turnInstance,
 });

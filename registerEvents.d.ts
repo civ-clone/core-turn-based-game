@@ -10,7 +10,7 @@ import { Turn } from './Turn';
  * cycle. A structural type has no such problem, and says more precisely what
  * this package actually touches. A real `Game` satisfies it.
  */
-export declare type TurnBasedGame = {
+export type TurnBasedGame = {
   engine: Engine;
   gameResult: GameResultRegistry;
   rules: RuleRegistry;

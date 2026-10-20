@@ -12,7 +12,7 @@
   "private": false,
   "scripts": {
     "build": "npm run ts:compile && npm run prettier:format",
-    "prettier:check": "prettier --config .prettierrc '**/*.ts'",
+    "prettier:check": "prettier --config .prettierrc --check '**/*.ts'",
     "prettier:format": "prettier --config .prettierrc '**/*.ts' --write",
     "ts:compile": "tsc --build tsconfig.json"
   },
@@ -23,7 +23,6 @@
   "dependencies": {
     "@civ-clone/core-data-object": "^0.1.9",
     "@civ-clone/core-engine": "^0.1.0",
-    "@civ-clone/core-rule": "^0.1.0",
-    "@civ-clone/core-yield": "^0.1.0"
+    "@civ-clone/core-rule": "^0.1.0"
   }
 }

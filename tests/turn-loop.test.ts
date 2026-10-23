@@ -127,6 +127,96 @@ describe('the turn loop', (): void => {
     expect(started).to.deep.equal([1, 1]);
   });
 
+  it('holds between turns when told to, and goes on when released', (): void => {
+    const { engine, started } = setUp();
+
+    engine.emit('game:start');
+    engine.emit('turn:hold');
+
+    // The turn under way finishes; the next waits.
+    engine.emit('turn:end');
+
+    expect(started).to.deep.equal([1]);
+
+    // Keeping playing isn't releasing.
+    engine.emit('game:continue');
+
+    expect(started).to.deep.equal([1]);
+
+    engine.emit('turn:release');
+
+    expect(started).to.deep.equal([1, 2]);
+
+    // Released while nothing waits: nothing starts, and the loop runs on.
+    engine.emit('turn:release');
+    engine.emit('turn:end');
+
+    expect(started).to.deep.equal([1, 2, 3]);
+  });
+
+  it('keeps a game that ended at its ending, held or not', (): void => {
+    const { engine, gameResult, rules, turn, started } = setUp();
+
+    rules.register(
+      new End(
+        new Effect((turn: Turn) =>
+          endGame('date', null, gameResult, rules, turn)
+        )
+      )
+    );
+
+    engine.emit('game:start');
+    engine.emit('turn:hold');
+    engine.emit('turn:end');
+    engine.emit('turn:release');
+
+    expect(started).to.deep.equal([1]);
+
+    gameResult.get()!.completeScoring();
+    engine.emit('game:continue');
+
+    expect(started).to.deep.equal([1, 2]);
+  });
+
+  it('starts a new game unheld', (): void => {
+    const { engine, turn, started } = setUp();
+
+    engine.emit('game:start');
+    engine.emit('turn:hold');
+    engine.emit('turn:end');
+
+    expect(started).to.deep.equal([1]);
+
+    turn.set(0);
+    engine.emit('game:start');
+    engine.emit('turn:end');
+
+    expect(started).to.deep.equal([1, 1, 2]);
+  });
+
+  it('loads a game neither waiting nor held, whatever the game before it was', (): void => {
+    const { engine, turn, started } = setUp();
+
+    engine.emit('game:start');
+    engine.emit('turn:hold');
+    engine.emit('turn:end');
+
+    expect(started).to.deep.equal([1]);
+
+    // A game loaded part-way through a turn carries on with it: a release, or keeping playing, starts nothing.
+    turn.set(40);
+    engine.emit('game:loaded');
+    engine.emit('turn:release');
+    engine.emit('game:continue');
+
+    expect(started).to.deep.equal([1]);
+
+    // And it isn't held: the turn ends and the next starts.
+    engine.emit('turn:end');
+
+    expect(started).to.deep.equal([1, 41]);
+  });
+
   it('waits again when a game loaded where it was waiting is told to', (): void => {
     const { engine, gameResult, rules, turn, started } = setUp();
 
